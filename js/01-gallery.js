@@ -20,7 +20,6 @@ const makeGallery = () => {
     .join("");
   galleryEl.innerHTML = img;
 };
-// galleryEl.innerHTML = img.join("");
 
 makeGallery();
 
@@ -31,12 +30,29 @@ galleryEl.addEventListener("click", (event) => {
     return;
   }
 
-  const instance = basicLightbox.create(`
-
+  const instance = basicLightbox.create(
+    `
     <img src= '${event.target.dataset.source}'>
-`);
+`,
+    {
+      onShow: (instance) => {
+        document.onkeyup = (event) => {
+          onEscape(event, instance);
+        };
+      },
+      onClose: () => {
+        document.onkeyup = null;
+      },
+    }
+  );
 
   instance.show();
-});
 
-// console.log(galleryItems);
+  function onEscape(event, instance) {
+    console.log(event);
+    if (event.code !== "Tab") {
+      return;
+    }
+    instance.close();
+  }
+});
